@@ -16,18 +16,23 @@ description: "长篇网文创作技能，帮助用户规划小说大纲、管理
 │    webnovel-query / webnovel-learn / webnovel-dashboard             │
 │    batch-write (批量写作)                                           │
 ├─────────────────────────────────────────────────────────────────────┤
-│  Agents (10个):                                                     │
+│  Agents (15个):                                                     │
 │    Context Agent / Data Agent / Reviewer / Deconstruction          │
 │    Auto-Validator (提交前校验) / Foreshadow-Manager (伏笔管理)     │
 │    Regression-Tester (回归测试) / Emotion-Analyzer (情绪分析)       │
-│    Style-Learner (风格学习) / Batch-Writer (批量写作)               │
+│    Style-Learner (风格学习) / Batch-Writer (批量写作)              │
+│    Item-Tracker (物品追踪) / Number-Checker (数字校验)              │
+│    Knowledge-Boundary (知识边界) / POV-Checker (视角检查)           │
+│    Relationship-Matrix (势力关系)
 ├─────────────────────────────────────────────────────────────────────┤
 │  Data Layer:                                                        │
-│    .webnovel/state.json / index.db / memory                        │
-│    foreshadow_tracker.json / style_profile.json / queue_state.json  │
+│    .webnovel/state.json / index.db / memory                          │
+│    foreshadow_tracker.json / style_profile.json / queue_state.json   │
+│    items.json / numbers.json / knowledge.json / relationships.json   │
 ├─────────────────────────────────────────────────────────────────────┤
 │  References:                                                        │
 │    genre-profiles.md / reading-power-taxonomy.md / review-schema.md │
+│    physics-rules.md (物理法则追踪) │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -37,6 +42,10 @@ description: "长篇网文创作技能，帮助用户规划小说大纲、管理
 写作请求 → Context Agent → 起草 → Auto-Validator → Regression-Tester
                                               ↓
 Foreshadow-Manager ← Data Agent → Emotion-Analyzer → Style-Learner
+       ↓                    ↓                    ↓
+Item-Tracker      Number-Checker    Knowledge-Boundary
+       ↓                    ↓                    ↓
+Relationship-Matrix     POV-Checker    Physics-Rules
                                               ↓
                                         提交/下一章
 ```
@@ -105,16 +114,49 @@ Foreshadow-Manager ← Data Agent → Emotion-Analyzer → Style-Learner
 - Fire 断档不超过 10 章
 - Constellation 断档不超过 15 章
 
-## 六维审查
+## 六维审查 + 逻辑防御
 
-| 维度 | 检查重点 |
-|------|----------|
-| High-point | 爽点密度与质量 |
-| Consistency | 设定一致性（战力/地点/时间线） |
-| Pacing | Strand 比例与断档 |
-| OOC | 人物行为是否偏离人设 |
-| Continuity | 场景与叙事连贯性 |
-| Reader-pull | 钩子强度、期待管理 |
+| 维度 | 检查重点 | 防御Agent |
+|------|----------|-----------|
+| High-point | 爽点密度与质量 | - |
+| Consistency | 设定一致性 | Item-Tracker, Physics-Rules |
+| Pacing | Strand 比例与断档 | - |
+| OOC | 人物行为是否偏离人设 | Relationship-Matrix |
+| Continuity | 场景与叙事连贯性 | Number-Checker |
+| Reader-pull | 钩子强度、期待管理 | Foreshadow-Manager |
+| Knowledge | 知识边界 | Knowledge-Boundary |
+| POV | 视角一致性 | POV-Checker |
+
+## 逻辑防御系统（防止剧情漏洞）
+
+为防止长篇创作中的逻辑漏洞，新增以下防护层：
+
+### 高优先级检查
+
+| Agent | 文件 | 检查内容 |
+|-------|------|----------|
+| Item-Tracker | `agents/item-tracker.md` | 物品流转：获取→使用→转移→销毁全程追踪 |
+| Number-Checker | `agents/number-consistency-checker.md` | 数字一致：年龄/时间/货币/数量校验 |
+| Knowledge-Boundary | `agents/knowledge-boundary-checker.md` | 知识边界：角色只知应知之事 |
+
+### 中优先级检查
+
+| Agent | 文件 | 检查内容 |
+|-------|------|----------|
+| Relationship-Matrix | `agents/relationship-matrix-tracker.md` | 势力关系：态度转变需铺垫 |
+| POV-Checker | `agents/pov-leak-checker.md` | 视角检查：限视角不泄漏 |
+
+### 物理法则追踪
+
+文件：`references/physics-rules.md`
+
+| 法则类型 | 检查项 |
+|----------|--------|
+| 境界法则 | 低境界不能做高境界专属行为 |
+| 能量法则 | 灵力消耗有来源，恢复有速率 |
+| 空间法则 | 传送/储物有边界限制 |
+| 时间法则 | 突破耗时合理，时间线顺序 |
+| 因果法则 | 获得必有代价，信息传播有媒介 |
 
 ## 项目初始化流程
 
