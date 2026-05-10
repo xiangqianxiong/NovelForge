@@ -16,7 +16,7 @@ description: "长篇网文创作技能，帮助用户规划小说大纲、管理
 │    webnovel-query / webnovel-learn / webnovel-dashboard             │
 │    batch-write (批量写作)                                           │
 ├─────────────────────────────────────────────────────────────────────┤
-│  Agents (20个):                                                     │
+│  Agents (19个):                                                     │
 │    Context Agent / Data Agent / Reviewer / Deconstruction          │
 │    Auto-Validator (提交前校验) / Foreshadow-Manager (伏笔管理)     │
 │    Regression-Tester (回归测试) / Emotion-Analyzer (情绪分析)       │
