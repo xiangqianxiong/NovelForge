@@ -8,23 +8,37 @@ description: "长篇网文创作技能，帮助用户规划小说大纲、管理
 ## 系统架构
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                      SOLO Assistant                        │
-├─────────────────────────────────────────────────────────────┤
-│  Skills (7个):                                             │
-│    webnovel-init / webnovel-plan / webnovel-write          │
-│    webnovel-review / webnovel-query / webnovel-learn       │
-│    webnovel-dashboard                                      │
-├─────────────────────────────────────────────────────────────┤
-│  Agents (4个):                                            │
-│    Context Agent / Data Agent / Reviewer / Deconstruction  │
-├─────────────────────────────────────────────────────────────┤
-│  Data Layer:                                              │
-│    .webnovel/state.json / index.db / memory               │
-├─────────────────────────────────────────────────────────────┤
-│  References:                                              │
-│    genre-profiles.md / reading-power-taxonomy.md           │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                          SOLO Assistant                             │
+├─────────────────────────────────────────────────────────────────────┤
+│  Skills (8个):                                                     │
+│    webnovel-init / webnovel-plan / webnovel-write / webnovel-review│
+│    webnovel-query / webnovel-learn / webnovel-dashboard             │
+│    batch-write (批量写作)                                           │
+├─────────────────────────────────────────────────────────────────────┤
+│  Agents (10个):                                                     │
+│    Context Agent / Data Agent / Reviewer / Deconstruction          │
+│    Auto-Validator (提交前校验) / Foreshadow-Manager (伏笔管理)     │
+│    Regression-Tester (回归测试) / Emotion-Analyzer (情绪分析)       │
+│    Style-Learner (风格学习) / Batch-Writer (批量写作)               │
+├─────────────────────────────────────────────────────────────────────┤
+│  Data Layer:                                                        │
+│    .webnovel/state.json / index.db / memory                        │
+│    foreshadow_tracker.json / style_profile.json / queue_state.json  │
+├─────────────────────────────────────────────────────────────────────┤
+│  References:                                                        │
+│    genre-profiles.md / reading-power-taxonomy.md / review-schema.md │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### 自动化流水线
+
+```
+写作请求 → Context Agent → 起草 → Auto-Validator → Regression-Tester
+                                              ↓
+Foreshadow-Manager ← Data Agent → Emotion-Analyzer → Style-Learner
+                                              ↓
+                                        提交/下一章
 ```
 
 ## 什么时候使用这个技能
