@@ -39,8 +39,51 @@ model: inherit
   "planted_chapter": 10,
   "expected_payoff_chapter": 25,
   "actual_payoff_chapter": null,
+  "urgency": "normal|urgent|overdue",
+  "payoff_refs": [],
   "deadline_warning": false,
   "overdue_chapters": 0
+}
+```
+
+### 4.1 urgency 计算规则
+
+```python
+def calculate_urgency(current_chapter, expected_payoff, foreshadow_type):
+    remaining = expected_payoff - current_chapter
+    thresholds = {
+        "micro": 2,
+        "minor": 3,
+        "medium": 5,
+        "major": 10,
+        "epic": 30
+    }
+    threshold = thresholds[foreshadow_type]
+    
+    if current_chapter > expected_payoff:
+        return "overdue"
+    elif remaining <= threshold * 0.3:
+        return "urgent"
+    else:
+        return "normal"
+```
+
+### 4.2 payoff_refs 关联格式
+
+```json
+{
+  "payoff_refs": [
+    {
+      "chapter": 30,
+      "type": "partial|full|hinted",
+      "description": "第一次暗示"
+    },
+    {
+      "chapter": 50,
+      "type": "full",
+      "description": "完全揭示"
+    }
+  ]
 }
 ```
 
@@ -62,8 +105,10 @@ python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" for
       "content": "神秘人来信",
       "planted_chapter": 10,
       "expected_payoff": 15,
+      "urgency": "normal",
       "deadline_chapters": 5,
-      "overdue": false
+      "overdue": false,
+      "payoff_refs": []
     }
   ],
   "total_debt": 8,
@@ -73,6 +118,11 @@ python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" for
     "medium": 2,
     "major": 1,
     "epic": 0
+  },
+  "urgency_breakdown": {
+    "overdue": 1,
+    "urgent": 2,
+    "normal": 5
   }
 }
 ```
@@ -165,7 +215,7 @@ def calculate_debt_ratio(current_chapter, active_foreshadows):
 
 ```json
 {
-  "version": "1.0",
+  "version": "2.0",
   "project": "凡人修仙传",
   "last_updated_chapter": 50,
   "foreshadows": [
@@ -177,6 +227,10 @@ def calculate_debt_ratio(current_chapter, active_foreshadows):
       "expected_payoff_chapter": 50,
       "actual_payoff_chapter": null,
       "status": "active",
+      "urgency": "urgent",
+      "payoff_refs": [
+        {"chapter": 30, "type": "hinted", "description": "纳兰嫣然提及比武日期"}
+      ],
       "planting_location": "萧家大厅",
       "revelation_preview": "萧炎 vs 纳兰嫣然",
       "connected_loops": [],
@@ -189,6 +243,11 @@ def calculate_debt_ratio(current_chapter, active_foreshadows):
     "total_faded": 3,
     "current_active": 4,
     "current_overdue": 1
+  },
+  "urgency_stats": {
+    "overdue": 1,
+    "urgent": 1,
+    "normal": 2
   }
 }
 ```

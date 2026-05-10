@@ -16,23 +16,25 @@ description: "长篇网文创作技能，帮助用户规划小说大纲、管理
 │    webnovel-query / webnovel-learn / webnovel-dashboard             │
 │    batch-write (批量写作)                                           │
 ├─────────────────────────────────────────────────────────────────────┤
-│  Agents (15个):                                                     │
+│  Agents (20个):                                                     │
 │    Context Agent / Data Agent / Reviewer / Deconstruction          │
 │    Auto-Validator (提交前校验) / Foreshadow-Manager (伏笔管理)     │
 │    Regression-Tester (回归测试) / Emotion-Analyzer (情绪分析)       │
 │    Style-Learner (风格学习) / Batch-Writer (批量写作)              │
-│    Item-Tracker (物品追踪) / Number-Checker (数字校验)              │
-│    Knowledge-Boundary (知识边界) / POV-Checker (视角检查)           │
-│    Relationship-Matrix (势力关系)
+│    Item-Tracker / Number-Checker / Knowledge-Boundary             │
+│    POV-Checker / Relationship-Matrix (势力关系)                    │
+│    Memory-Pack (精简记忆包) / Character-Growth (成长追踪)          │
+│    Periodic-Health (阶段体检) / Volume-Foreshadow (卷级伏笔)      │
 ├─────────────────────────────────────────────────────────────────────┤
 │  Data Layer:                                                        │
 │    .webnovel/state.json / index.db / memory                          │
-│    foreshadow_tracker.json / style_profile.json / queue_state.json   │
-│    items.json / numbers.json / knowledge.json / relationships.json   │
+│    foreshadow_tracker.json / style_dna.json / queue_state.json        │
+│    items.json / numbers.json / knowledge.json / relationships.json     │
+│    character_growth.json / memory_packs/                              │
 ├─────────────────────────────────────────────────────────────────────┤
 │  References:                                                        │
 │    genre-profiles.md / reading-power-taxonomy.md / review-schema.md │
-│    physics-rules.md (物理法则追踪) │
+│    physics-rules.md (物理法则追踪) / style-dna.md (风格基线)     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -121,11 +123,41 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 | High-point | 爽点密度与质量 | - |
 | Consistency | 设定一致性 | Item-Tracker, Physics-Rules |
 | Pacing | Strand 比例与断档 | - |
-| OOC | 人物行为是否偏离人设 | Relationship-Matrix |
+| OOC | 人物行为是否偏离人设 | Relationship-Matrix, Character-Growth |
 | Continuity | 场景与叙事连贯性 | Number-Checker |
 | Reader-pull | 钩子强度、期待管理 | Foreshadow-Manager |
 | Knowledge | 知识边界 | Knowledge-Boundary |
 | POV | 视角一致性 | POV-Checker |
+| Style | 风格漂移 | Periodic-Health, Style-DNA |
+
+## 记忆中台系统
+
+借鉴 novel-creation 的五层记忆架构，实现长期防漂移：
+
+### 五层记忆结构
+
+| 层级 | 内容 | 存储文件 |
+|------|------|----------|
+| L1 风格DNA | 写法和语感基线 | `style_dna.json` |
+| L2 人物层 | 角色设定、成长轨迹 | `character_growth.json` |
+| L3 剧情层 | 主线、因果、时间线 | `state.json` |
+| L4 上下文层 | 章节状态、伏笔、未解问题 | `foreshadow_tracker.json` |
+| L5 历史层 | 章节摘要、决策记录 | `summaries/` |
+
+### 精简记忆包
+
+| 包类型 | 内容 | 适用场景 |
+|--------|------|----------|
+| 轻量包 | 章节目标+1个伏笔+角色状态 | 日常续写 |
+| 标准包 | +前3章摘要+活跃人物 | 大纲推进 |
+| 完整包 | +设定上下文+风格DNA | 重大转折 |
+
+### 阶段性校准
+
+- 每10章触发"阶段体检"
+- 检测风格漂移趋势
+- 伏笔回收率统计
+- 人物弧线进度
 
 ## 逻辑防御系统（防止剧情漏洞）
 
