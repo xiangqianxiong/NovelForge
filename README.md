@@ -98,4 +98,4 @@ NovelForge 是一套通过智能 Agent 调用 Skills 的全流程小说创作辅
 ```
 
 ## 更多信息
-详细使用说明请查看 [webnovel-writer/README.md](file:///workspace/.trae/skills/webnovel-writer/README.md)
+详细使用说明请查看 [webnovel-writer/README.md](file:///workspace/webnovel-writer/README.md)
