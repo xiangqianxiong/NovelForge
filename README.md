@@ -82,20 +82,49 @@ NovelForge 是一套通过智能 Agent 调用 Skills 的全流程小说创作辅
 
 ## 项目结构
 ```
-小说项目/
-├── .webnovel/          # 运行时状态和数据
-│   ├── state.json
-│   ├── backups/
-│   └── summaries/
-├── 设定集/             # 世界观、角色设定等
-│   ├── 世界观.md
-│   ├── 力量体系.md
-│   └── 主角卡.md
-├── 大纲/               # 总纲和卷章大纲
-│   └── 总纲.md
-├── 正文/               # 章节内容
-└── 审查报告/           # 质量审查结果
+NovelForge/
+├── README.md              # 项目说明文档
+└── webnovel-writer/       # 核心技能模块
+    ├── agents/            # 19个智能代理
+    │   ├── context-agent.md
+    │   ├── data-agent.md
+    │   ├── reviewer.md
+    │   └── ...
+    ├── genres/            # 小说题材配置
+    │   ├── xuanhuan/
+    │   ├── period-drama/
+    │   └── ...
+    ├── references/        # 参考文档
+    │   ├── review-schema.md
+    │   ├── style-dna.md
+    │   └── ...
+    ├── skills/            # 7个核心技能
+    │   ├── webnovel-init/
+    │   ├── webnovel-plan/
+    │   ├── webnovel-write/
+    │   └── ...
+    ├── templates/         # 模板文件
+    ├── README.md
+    └── SKILL.md
 ```
+
+## 核心组件
+
+### 智能代理 (Agents)
+系统包含 19 个专门代理，各司其职：
+- **Context Agent** - 构建创作任务书
+- **Data Agent** - 提取事实更新状态
+- **Reviewer Agent** - 六维质量审查
+- **Foreshadow-Manager** - 伏笔管理
+- **Emotion-Analyzer** - 情绪分析
+- **Style-Learner** - 风格学习
+- **Relationship-Matrix** - 关系矩阵
+- **Character-Growth** - 角色成长追踪
+
+### 支持题材
+- 玄幻修仙、都市异能、末世、系统流、高武、西幻
+- 古言、宫斗宅斗、青春甜宠、豪门总裁
+- 悬疑灵异、规则怪谈、克苏鲁、知乎短篇
 
 ## 更多信息
 详细使用说明请查看 [webnovel-writer/README.md](file:///workspace/webnovel-writer/README.md)
