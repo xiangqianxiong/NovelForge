@@ -29,6 +29,10 @@ description: "初始化小说项目。创建项目结构、设定模板、大纲
 - **主角结构**：单主角/多主角
 - **女主配置**：无女主/单女主/多女主
 - **反派层级**
+- **参考风格**：选择写作风格参考（可多选）
+  - 古龙：诗意武侠，短句留白，充满哲理
+  - 金庸：史诗武侠，细腻描写，文化底蕴深厚
+  - 鲁迅：冷峻犀利，深刻批判，揭露人性
 
 ## 初始化产出
 
@@ -61,7 +65,8 @@ description: "初始化小说项目。创建项目结构、设定模板、大纲
     "genre": "",
     "created_at": "",
     "target_words": 2000000,
-    "target_chapters": 600
+    "target_chapters": 600,
+    "style_references": ["古龙", "金庸"]
   },
   "progress": {
     "current_chapter": 0,
@@ -76,6 +81,11 @@ description: "初始化小说项目。创建项目结构、设定模板、大纲
     "last_quest_chapter": 0,
     "last_fire_chapter": 0,
     "last_constellation_chapter": 0
+  },
+  "style_settings": {
+    "current_style": "古龙",
+    "mix_ratio": {"古龙": 0.6, "金庸": 0.4},
+    "custom_rules": []
   }
 }
 ```
