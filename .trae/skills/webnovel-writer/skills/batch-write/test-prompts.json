@@ -1,0 +1,41 @@
+{
+  "skill_name": "batch-write",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/batch-write 1-10",
+      "expected_output": "启动批量写作队列，从第1章到第10章，自动加载上下文并依次创作",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "/batch-write 51-60 --auto",
+      "expected_output": "启动自动模式批量写作，遇到非阻断问题自动处理",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "/batch-status",
+      "expected_output": "显示当前队列状态，包括进度、当前章节、预估剩余时间",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "/batch-pause",
+      "expected_output": "暂停当前批量写作队列",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "/batch-resume",
+      "expected_output": "继续已暂停的批量写作队列",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "/batch-stop",
+      "expected_output": "停止当前批量写作队列，保存进度",
+      "files": []
+    }
+  ]
+}

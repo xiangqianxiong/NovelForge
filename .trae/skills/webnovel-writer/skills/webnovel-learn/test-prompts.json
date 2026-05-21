@@ -1,0 +1,29 @@
+{
+  "skill_name": "webnovel-learn",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/webnovel-learn \"这章的危机钩设计很有效，悬念拉满\"",
+      "expected_output": "提取悬念钩写作模式，保存到project_memory.json",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "/webnovel-learn \"这种装逼打脸的爽点设计读者很喜欢\"",
+      "expected_output": "提取爽点设计模式，保存到project_memory.json",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "/webnovel-learn \"压抑-爆发的节奏模式效果很好\"",
+      "expected_output": "提取节奏模式，保存到project_memory.json",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "学习一下这个对话技巧：问东答西，欲言又止",
+      "expected_output": "识别对话模式类型，提取关键要素，保存到project_memory.json",
+      "files": []
+    }
+  ]
+}
