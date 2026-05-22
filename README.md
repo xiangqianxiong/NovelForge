@@ -81,6 +81,8 @@ NovelForge 是一套通过智能 Agent 调用 Skills 的全流程小说创作辅
 ```
 
 ## 项目结构
+
+### 小说项目目录结构
 ```
 小说项目/
 ├── .webnovel/          # 运行时状态和数据
@@ -97,6 +99,33 @@ NovelForge 是一套通过智能 Agent 调用 Skills 的全流程小说创作辅
 └── 审查报告/           # 质量审查结果
 ```
 
-## 更多信息
-详细使用说明请查看 [webnovel-writer/README.md](file:///workspace/.trae/skills/webnovel-writer/README.md)
+### NovelForge 模块目录结构
+```
+NovelForge/
+├── README.md              # 项目说明文档
+└── webnovel-writer/       # 核心技能模块
+    ├── agents/            # 19个智能代理
+    │   ├── context-agent.md
+    │   ├── data-agent.md
+    │   ├── reviewer.md
+    │   └── ...
+    ├── genres/            # 小说题材配置
+    │   ├── xuanhuan/
+    │   ├── period-drama/
+    │   └── ...
+    ├── references/        # 参考文档
+    │   ├── review-schema.md
+    │   ├── style-dna.md
+    │   └── ...
+    ├── skills/            # 7个核心技能
+    │   ├── webnovel-init/
+    │   ├── webnovel-plan/
+    │   ├── webnovel-write/
+    │   └── ...
+    ├── templates/         # 模板文件
+    ├── README.md
+    └── SKILL.md
+```
 
+## 更多信息
+详细使用说明请查看 [webnovel-writer/README.md](file:///workspace/webnovel-writer/README.md)
