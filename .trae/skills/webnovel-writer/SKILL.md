@@ -21,20 +21,21 @@ description: "长篇网文创作技能，帮助用户规划小说大纲、管理
 │    Auto-Validator (提交前校验) / Foreshadow-Manager (伏笔管理)     │
 │    Regression-Tester (回归测试) / Emotion-Analyzer (情绪分析)       │
 │    Style-Learner (风格学习) / Batch-Writer (批量写作)              │
-│    Item-Tracker / Number-Checker / Knowledge-Boundary             │
+│    Item-Tracker / Number-Checker / Knowledge-Boundary              │
 │    POV-Checker / Relationship-Matrix (势力关系)                    │
 │    Memory-Pack (精简记忆包) / Character-Growth (成长追踪)          │
-│    Periodic-Health (阶段体检) / Volume-Foreshadow (卷级伏笔)      │
+│    Periodic-Health (阶段体检) / Volume-Foreshadow (卷级伏笔)       │
 ├─────────────────────────────────────────────────────────────────────┤
 │  Data Layer:                                                        │
-│    .webnovel/state.json / index.db / memory                          │
-│    foreshadow_tracker.json / style_dna.json / queue_state.json        │
-│    items.json / numbers.json / knowledge.json / relationships.json     │
-│    character_growth.json / memory_packs/                              │
+│    .webnovel/state.json / index.db / memory                        │
+│    foreshadow_tracker.json / style_dna.json / queue_state.json      │
+│    items.json / numbers.json / knowledge.json / relationships.json   │
+│    character_growth.json / memory_packs/                           │
 ├─────────────────────────────────────────────────────────────────────┤
 │  References:                                                        │
 │    genre-profiles.md / reading-power-taxonomy.md / review-schema.md │
-│    physics-rules.md (物理法则追踪) / style-dna.md (风格基线)     │
+│    physics-rules.md (物理法则追踪) / style-dna.md (风格基线)        │
+│    auto-review-workflow.md (自动审核评分)                           │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -49,7 +50,10 @@ Item-Tracker      Number-Checker    Knowledge-Boundary
        ↓                    ↓                    ↓
 Relationship-Matrix     POV-Checker    Physics-Rules
                                               ↓
-                                        提交/下一章
+                                    自动审核评分 ⚠️
+                                              ↓
+                                    通过 → 提交/下一章
+                                    失败 → 打回优化
 ```
 
 ## 什么时候使用这个技能
@@ -71,7 +75,7 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 |------|------|
 | `/webnovel-init` | 初始化小说项目，创建项目结构 |
 | `/webnovel-plan [卷号]` | 规划卷级大纲和章节安排 |
-| `/webnovel-write [章号]` | 写作完整章节（context → draft → review → polish） |
+| `/webnovel-write [章号]` | 写作完整章节（带自动审核评分） |
 | `/webnovel-review [范围]` | 六维质量审查 |
 | `/webnovel-query [关键词]` | 查询角色、伏笔、剧情状态 |
 | `/webnovel-learn [内容]` | 从会话中提取写作模式 |
@@ -229,34 +233,78 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 └── 审查报告/
 ```
 
-## 写作流程
+## 写作流程（带自动审核评分）
 
 ### `/webnovel-write` 完整流程
 
-1. **写前准备（Context Agent）**
-   - 读取 MASTER_SETTING.json、大纲、已有章节
-   - 查询角色状态、伏笔、世界规则
-   - 生成五段式写作任务书
+#### Phase 1: 写前准备（Context Agent）
+1. 读取 MASTER_SETTING.json、大纲、已有章节
+2. 查询角色状态、伏笔、世界规则
+3. 生成五段式写作任务书
 
-2. **起草正文**
-   - 按照任务书写作
-   - 遵守防幻觉三定律
-   - 应用 Strand 节奏控制
+#### Phase 2: 起草正文
+1. 按照任务书写作
+2. 遵守防幻觉三定律
+3. 应用 Strand 节奏控制
 
-3. **质量审查（Reviewer）**
-   - 六维审查
-   - 输出结构化问题清单
-   - 不评分，只找问题
+#### Phase 3: 质量审查（Reviewer）
+1. 执行六维审查
+2. AI味检测
+3. 设定一致性检查
+4. 输出结构化问题清单
 
-4. **润色修改**
-   - 根据审查意见修改
-   - 保持角色一致性
-   - 优化节奏和爽点
+#### Phase 4: 自动审核评分 ⚠️【自动执行】
 
-5. **数据更新（Data Agent）**
-   - 提取实体和状态变更
-   - 生成章节摘要
-   - 更新伏笔追踪
+**自动评分维度：**
+
+| 维度 | 权重 | 通过阈值 |
+|------|------|----------|
+| High-point | 20% | >= 15/20 |
+| Consistency | 20% | >= 15/20 |
+| Pacing | 15% | >= 11/15 |
+| OOC | 15% | >= 12/15 |
+| Continuity | 15% | >= 11/15 |
+| Reader-pull | 15% | >= 11/15 |
+
+**评分等级：**
+- **优秀（90-100）**：✅ 直接通过
+- **良好（75-89）**：✅ 通过
+- **合格（60-74）**：⚠️ 通过，需注意问题
+- **不合格（<60）**：❌ 打回优化
+
+**通过条件（必须同时满足）：**
+1. 总分 >= 75
+2. 无 critical 级别问题
+3. 高优先级问题 <= 3个
+4. AI味检测通过
+5. 字数在目标范围内
+
+**审核结果：**
+
+✅ **通过时：**
+- 自动保存到正式目录
+- 更新 state.json
+- 生成评估报告
+
+❌ **打回时：**
+- 生成详细问题清单
+- 提供修改建议
+- 标记为待优化状态
+- 等待修复后重新提交
+
+**参考资料：** `references/auto-review-workflow.md`
+
+#### Phase 5: 润色修改
+1. 根据审查意见修改
+2. 保持角色一致性
+3. 优化节奏和爽点
+4. 修复审核发现的问题
+
+#### Phase 6: 数据更新（Data Agent）
+1. 提取实体和状态变更
+2. 生成章节摘要
+3. 更新伏笔追踪
+4. 保存最终版本
 
 ## 题材配置
 
@@ -304,7 +352,9 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 - `references/genre-profiles.md` - 37种题材画像
 - `references/reading-power-taxonomy.md` - 追读力学
 - `references/review-schema.md` - 审查规范
-- `genres/` - 6个详细题材配置目录
+- `references/auto-review-workflow.md` - 自动审核评分工作流 ⚠️
+- `references/grading-standards.md` - 质量评分标准
+- `genres/` - 13个详细题材配置目录
 
 ## 注意事项
 
@@ -313,6 +363,7 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 - 保持前后设定一致
 - 合理安排爽点分布
 - 留有悬念吸引追读
+- ⚠️ **所有章节必须通过自动审核评分才能提交**
 
 ## 边界条件处理
 
@@ -325,6 +376,7 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 | 资源不足 | 内存/存储不足 | 清理缓存，提示用户释放空间 |
 | 用户中断 | 用户中途取消 | 保存当前进度，支持恢复 |
 | 版本冲突 | Git冲突 | 提示用户手动解决或自动合并 |
+| **审核不通过** | 评分 < 75 或存在阻断问题 | 标记为待优化，等待用户修复 |
 
 ### 中断恢复机制
 
@@ -332,6 +384,7 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 2. **断点续写**：支持从中断处继续写作
 3. **版本回滚**：支持恢复到历史版本
 4. **冲突解决**：自动检测并提示版本冲突
+5. **审核失败**：保存审核报告，支持从问题点继续优化
 
 ## 检查点设计
 
@@ -344,12 +397,14 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 | 批量写作 | 启动批量任务前 | 确认章节范围、自动处理选项 |
 | 质量审查 | 修改章节前 | 确认是否应用审查建议 |
 | 风格切换 | 切换写作风格前 | 确认风格变更影响 |
+| **审核失败** | 章节未通过审核时 | 确认修复方案 |
 
 ### 撤销机制
 
 - **单步撤销**：支持撤销上一步操作
 - **历史记录**：保留最近10次修改记录
 - **版本对比**：支持查看修改前后对比
+- **审核回退**：支持回退到审核前的版本
 
 ## 安全边界
 
@@ -357,3 +412,4 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 - **权限控制**：不允许访问系统敏感目录
 - **数据保护**：自动备份重要文件
 - **异常退出**：自动保存状态，防止数据丢失
+- **审核机制**：未通过审核的章节不允许提交
