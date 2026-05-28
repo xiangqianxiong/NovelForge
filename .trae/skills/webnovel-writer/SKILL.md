@@ -1,6 +1,6 @@
 ---
 name: "webnovel-writer"
-description: "长篇网文创作技能，帮助用户规划小说大纲、管理角色设定、追踪剧情伏笔、写作章节、审查质量。**当用户想要创建新小说项目、规划章节大纲、写作小说章节、审查章节质量时使用此技能。在用户提到'写小说'、'网文'、'创作'、'章节'、'大纲'、'伏笔'、'审查'、'批量写作'、'风格学习'、'人物成长'、'世界观'、'追读力'等关键词时也应触发此技能。**"
+description: "长篇网文创作技能，支持扫榜分析、拆解学习、大纲规划、章节写作、质量审查、去AI味、封面生成、故事导入等全流程功能。**当用户想要创建新小说项目、规划章节大纲、写作小说章节、审查章节质量、扫榜分析、拆解分析、去AI味、生成封面、导入作品时使用此技能。在用户提到'写小说'、'网文'、'创作'、'章节'、'大纲'、'伏笔'、'审查'、'批量写作'、'风格学习'、'人物成长'、'世界观'、'追读力'、'扫榜'、'拆解'、'去AI味'、'封面'、'导入'等关键词时也应触发此技能。**"
 ---
 
 # Webnovel Writer - 网文创作系统
@@ -11,31 +11,37 @@ description: "长篇网文创作技能，帮助用户规划小说大纲、管理
 ┌─────────────────────────────────────────────────────────────────────┐
 │                          SOLO Assistant                             │
 ├─────────────────────────────────────────────────────────────────────┤
-│  Skills (8个):                                                     │
-│    webnovel-init / webnovel-plan / webnovel-write / webnovel-review│
+│  Skills (13个):                                                     │
+│    webnovel-init / webnovel-plan / webnovel-write / webnovel-review │
 │    webnovel-query / webnovel-learn / webnovel-dashboard             │
 │    batch-write (批量写作)                                           │
+│    webnovel-scan (扫榜) / webnovel-analyze (拆解分析)               │
+│    webnovel-deslop (去AI味) / webnovel-cover (封面生成)             │
+│    webnovel-import (故事导入)                                       │
 ├─────────────────────────────────────────────────────────────────────┤
-│  Agents (19个):                                                     │
-│    Context Agent / Data Agent / Reviewer / Deconstruction          │
+│  Agents (19个):                                                      │
+│    Context Agent / Data Agent / Reviewer / Deconstruction           │
 │    Auto-Validator (提交前校验) / Foreshadow-Manager (伏笔管理)     │
-│    Regression-Tester (回归测试) / Emotion-Analyzer (情绪分析)       │
-│    Style-Learner (风格学习) / Batch-Writer (批量写作)              │
-│    Item-Tracker / Number-Checker / Knowledge-Boundary              │
-│    POV-Checker / Relationship-Matrix (势力关系)                    │
-│    Memory-Pack (精简记忆包) / Character-Growth (成长追踪)          │
-│    Periodic-Health (阶段体检) / Volume-Foreshadow (卷级伏笔)       │
+│    Regression-Tester (回归测试) / Emotion-Analyzer (情绪分析)         │
+│    Style-Learner (风格学习) / Batch-Writer (批量写作)               │
+│    Item-Tracker / Number-Checker / Knowledge-Boundary                │
+│    POV-Checker / Relationship-Matrix (势力关系)                      │
+│    Memory-Pack (精简记忆包) / Character-Growth (成长追踪)            │
+│    Periodic-Health (阶段体检) / Volume-Foreshadow (卷级伏笔)         │
 ├─────────────────────────────────────────────────────────────────────┤
-│  Data Layer:                                                        │
-│    .webnovel/state.json / index.db / memory                        │
-│    foreshadow_tracker.json / style_dna.json / queue_state.json      │
-│    items.json / numbers.json / knowledge.json / relationships.json   │
-│    character_growth.json / memory_packs/                           │
+│  Data Layer:                                                         │
+│    .webnovel/state.json / index.db / memory                          │
+│    foreshadow_tracker.json / style_dna.json / queue_state.json       │
+│    items.json / numbers.json / knowledge.json / relationships.json    │
+│    character_growth.json / memory_packs/                            │
+│    拆文库/ (扫榜数据、拆解分析)                                      │
 ├─────────────────────────────────────────────────────────────────────┤
-│  References:                                                        │
-│    genre-profiles.md / reading-power-taxonomy.md / review-schema.md │
-│    physics-rules.md (物理法则追踪) / style-dna.md (风格基线)        │
-│    auto-review-workflow.md (自动审核评分)                           │
+│  References:                                                         │
+│    genre-profiles.md / reading-power-taxonomy.md / review-schema.md  │
+│    physics-rules.md (物理法则追踪) / style-dna.md (风格基线)         │
+│    auto-review-workflow.md (自动审核评分)                            │
+│    banned-words.md (AI味检测) / anti-ai-writing.md (去AI方法)        │
+│    cover-styles.md (封面风格) / market-trends.md (市场趋势)          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -56,6 +62,59 @@ Relationship-Matrix     POV-Checker    Physics-Rules
                                     失败 → 打回优化
 ```
 
+## 完整创作流水线
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                          创作流程总览                                │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  1. 扫榜分析 → 2. 拆解学习 → 3. 项目初始化 → 4. 大纲规划          │
+│         ↓                ↓                ↓                ↓         │
+│  webnovel-scan    webnovel-analyze   webnovel-init    webnovel-plan │
+│                                                                     │
+│  5. 章节写作 → 6. 质量审查 → 7. AI味检测 → 8. 封面设计            │
+│         ↓                ↓                ↓                ↓         │
+│  webnovel-write  webnovel-review    webnovel-deslop  webnovel-cover │
+│                                                                     │
+│  9. 作品导入 ←───────────────────────────────────────── 10. 批量写作 │
+│  webnovel-import                                            batch-write │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### 各功能模块说明
+
+#### 扫榜模块（webnovel-scan）
+- 分析起点、番茄、晋江等平台排行榜
+- 提炼市场趋势与热门题材
+- 提取读者画像
+- 输出扫榜报告
+
+#### 拆解模块（webnovel-analyze）
+- 深度拆解爆款作品
+- 分析黄金三章结构
+- 提取人设、爽点、节奏模式
+- 生成文风分析报告
+
+#### 去AI味模块（webnovel-deslop）
+- 检测文本AI味等级
+- 6 Gate 系统性去AI
+- 保护创作意图
+- 输出润色报告
+
+#### 封面生成模块（webnovel-cover）
+- 分析书名题材
+- 设计封面视觉风格
+- 生成封面设计方案
+- 提供各平台尺寸规范
+
+#### 故事导入模块（webnovel-import）
+- 逆向解析已有作品
+- 生成标准项目结构
+- 自动识别角色、伏笔、时间线
+- 无缝衔接续写流程
+
 ## 什么时候使用这个技能
 
 **此技能专为网文创作场景设计。**
@@ -68,6 +127,11 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 - 用户想要查询角色、伏笔、剧情状态
 - 用户想要从参考书学习创作模式
 - 用户想要查看项目可视化面板
+- 用户想要扫榜分析市场趋势
+- 用户想要拆解分析爆款作品
+- 用户想要去除文章AI味
+- 用户想要生成小说封面
+- 用户想要导入已有作品续写
 
 ## 核心命令
 
@@ -80,6 +144,11 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 | `/webnovel-query [关键词]` | 查询角色、伏笔、剧情状态 |
 | `/webnovel-learn [内容]` | 从会话中提取写作模式 |
 | `/webnovel-dashboard` | 启动可视化面板 |
+| `/webnovel-scan` | 扫榜分析市场趋势 |
+| `/webnovel-analyze` | 拆解分析爆款作品 |
+| `/webnovel-deslop` | 去除文章AI味 |
+| `/webnovel-cover` | 生成小说封面 |
+| `/webnovel-import` | 导入已有作品续写 |
 
 ## Agent 分工
 
