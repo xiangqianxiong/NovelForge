@@ -1,6 +1,6 @@
 ---
 name: "webnovel-writer"
-description: "长篇网文创作技能，支持扫榜分析、拆解学习、大纲规划、章节写作、质量审查、去AI味、封面生成、故事导入等全流程功能。**当用户想要创建新小说项目、规划章节大纲、写作小说章节、审查章节质量、扫榜分析、拆解分析、去AI味、生成封面、导入作品时使用此技能。在用户提到'写小说'、'网文'、'创作'、'章节'、'大纲'、'伏笔'、'审查'、'批量写作'、'风格学习'、'人物成长'、'世界观'、'追读力'、'扫榜'、'拆解'、'去AI味'、'封面'、'导入'等关键词时也应触发此技能。**"
+description: "长篇网文创作技能。如果用户已确认小说名称，使用书名创建项目目录，在该目录中进行所有创作。支持扫榜分析、拆解学习、大纲规划、章节写作、质量审查、去AI味、封面生成、故事导入等全流程功能。**当用户提到书名、想要创建新小说、规划章节大纲、写作小说章节、审查章节质量、扫榜分析、去AI味、生成封面、导入作品时使用此技能。**"
 ---
 
 # Webnovel Writer - 网文创作系统
@@ -30,11 +30,12 @@ description: "长篇网文创作技能，支持扫榜分析、拆解学习、大
 │    Periodic-Health (阶段体检) / Volume-Foreshadow (卷级伏笔)         │
 ├─────────────────────────────────────────────────────────────────────┤
 │  Data Layer:                                                         │
-│    .webnovel/state.json / index.db / memory                          │
-│    foreshadow_tracker.json / style_dna.json / queue_state.json       │
-│    items.json / numbers.json / knowledge.json / relationships.json    │
-│    character_growth.json / memory_packs/                            │
-│    拆文库/ (扫榜数据、拆解分析)                                      │
+│    {书名}/.webnovel/state.json / summaries/ / backups/               │
+│    {书名}/.webnovel/foreshadow_tracker.json / style_dna.json         │
+│    {书名}/.webnovel/items.json / numbers.json / knowledge.json       │
+│    {书名}/.webnovel/relationships.json / character_growth.json       │
+│    {书名}/设定集/ / {书名}/大纲/ / {书名}/正文/ / {书名}/审查报告/    │
+│    拆文库/ (扫榜分析数据、拆解结果)                                  │
 ├─────────────────────────────────────────────────────────────────────┤
 │  References:                                                         │
 │    genre-profiles.md / reading-power-taxonomy.md / review-schema.md  │
@@ -117,9 +118,10 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 
 ## 什么时候使用这个技能
 
-**此技能专为网文创作场景设计。**
+**此技能专为网文创作场景设计。核心规则：一本书 = 一个项目目录。**
 
 使用此技能的时机：
+- 用户提到书名（如"我的《逆天改命》"、"帮我写《斗破苍穹》"）——自动进入或创建对应项目目录
 - 用户想要创建新的小说项目
 - 用户想要规划小说大纲（卷大纲、章大纲）
 - 用户想要写作小说章节
@@ -128,27 +130,30 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 - 用户想要从参考书学习创作模式
 - 用户想要查看项目可视化面板
 - 用户想要扫榜分析市场趋势
-- 用户想要拆解分析爆款作品
-- 用户想要去除文章AI味
+- 用户想要批量写作多章节
+- 用户想要去AI味润色文本
 - 用户想要生成小说封面
 - 用户想要导入已有作品续写
 
 ## 核心命令
 
-| 命令 | 功能 |
-|------|------|
-| `/webnovel-init` | 初始化小说项目，创建项目结构 |
-| `/webnovel-plan [卷号]` | 规划卷级大纲和章节安排 |
-| `/webnovel-write [章号]` | 写作完整章节（带自动审核评分） |
-| `/webnovel-review [范围]` | 六维质量审查 |
-| `/webnovel-query [关键词]` | 查询角色、伏笔、剧情状态 |
-| `/webnovel-learn [内容]` | 从会话中提取写作模式 |
-| `/webnovel-dashboard` | 启动可视化面板 |
-| `/webnovel-scan` | 扫榜分析市场趋势 |
-| `/webnovel-analyze` | 拆解分析爆款作品 |
-| `/webnovel-deslop` | 去除文章AI味 |
-| `/webnovel-cover` | 生成小说封面 |
-| `/webnovel-import` | 导入已有作品续写 |
+| 命令 | 功能 | 工作目录 |
+|------|------|---------|
+| `/webnovel-init` | 初始化小说项目，创建项目结构 | `{书名}/` （用户确认后创建） |
+| `/webnovel-plan [卷号]` | 规划卷级大纲和章节安排 | `{书名}/大纲/` |
+| `/webnovel-write [章号]` | 写作完整章节（带自动审核评分） | `{书名}/正文/` |
+| `/webnovel-review [范围]` | 六维质量审查 | `{书名}/审查报告/` |
+| `/webnovel-query [关键词]` | 查询角色、伏笔、剧情状态 | `{书名}/.webnovel/` 读取 |
+| `/webnovel-learn [内容]` | 从会话中提取写作模式 | `{书名}/设定集/` 写入 |
+| `/webnovel-dashboard` | 启动可视化面板 | `{书名}/` 读取 |
+| `/batch-write [范围]` | 批量写作多章节 | `{书名}/正文/` |
+| `/webnovel-scan` | 扫榜分析市场趋势 | 不依赖项目目录 |
+| `/webnovel-analyze` | 拆解分析爆款作品 | 有项目目录则从 `{书名}/正文/` 读取 |
+| `/webnovel-deslop` | 去除文章AI味 | 有项目目录则在 `{书名}/` 内工作 |
+| `/webnovel-cover` | 生成小说封面 | 有项目目录则从 `state.json` 复用信息 |
+| `/webnovel-import` | 导入已有作品续写 | 新建 `{书名}/` 目录（与 init 同格式） |
+
+**规则：所有创作类命令必须先找到项目目录才能执行。找不到时统一提示："尚未初始化小说项目，请先运行 `/webnovel-init`"**
 
 ## Agent 分工
 
@@ -263,13 +268,46 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 | 时间法则 | 突破耗时合理，时间线顺序 |
 | 因果法则 | 获得必有代价，信息传播有媒介 |
 
-## 项目初始化流程
+## 项目目录管理流程
 
-### `/webnovel-init` 引导信息
+### 核心规则：一本书 = 一个目录
+
+- 每本小说对应一个独立的项目目录，目录名 = 小说书名（如 `逆天改命/`、`斗破苍穹/`）
+- 项目目录是所有创作活动的唯一工作空间：正文、设定、大纲、状态、审查报告、学习成果全部在其中
+- 工作目录根目录下可以同时存在多本书的项目目录，互不干扰
+
+### 项目目录识别方法
+
+系统通过以下方式识别项目目录：
+
+1. **包含 `.webnovel/state.json`**——这是项目目录的核心标识
+2. **目录名是小说书名**——通过 context 判断（用户提到"我的《逆天改命》"等）
+
+### 所有技能的统一前置检查
+
+| 技能 | 目录检查策略 | 后续操作 |
+|------|------------|---------|
+| `/webnovel-init` | 检查是否已存在同名目录，存在则直接复用 | 不存在则创建新目录（需用户确认后才创建） |
+| `/webnovel-plan` | 检查是否存在项目目录，不存在则提示 init | 存在则在目录下的 `大纲/` 规划 |
+| `/webnovel-write` | 检查是否存在项目目录，不存在则提示 init | 存在则在目录下的 `正文/` 写作 |
+| `/webnovel-review` | 检查是否存在项目目录，不存在则提示 init | 存在则从 `正文/` 读取章节审查 |
+| `/webnovel-query` | 检查是否存在项目目录，不存在则提示 init | 存在则从 `.webnovel/` 查询信息 |
+| `/webnovel-learn` | 检查是否存在项目目录，不存在则提示 init | 存在则写入 `设定集/` 或 `.webnovel/` |
+| `/webnovel-dashboard` | 检查是否存在项目目录，不存在则提示 init | 存在则从目录读取状态 |
+| `/batch-write` | 检查是否存在项目目录，不存在则提示 init | 存在则在目录下的 `正文/` 批量写作 |
+| `/webnovel-cover` | 检查是否存在项目目录，存在则复用书名题材信息 | 有目录则直接从 state.json 读取，无则正常引导 |
+| `/webnovel-import` | 反向解析原文，创建项目目录（目录名 = 书名） | 与 webnovel-init 格式完全一致，导入后可直接写 |
+| `/webnovel-analyze` | 可选检查——如果是项目目录中的书，从 `正文/` 读原文 | 拆解结果保存到项目目录（如有） |
+| `/webnovel-scan` | 扫榜分析不依赖项目目录 | 正常运行 |
+| `/webnovel-deslop` | 检查是否存在项目目录（从项目目录内文本去味） | 有目录则在目录内工作，无则独立运行 |
+
+### 项目初始化流程
+
+#### `/webnovel-init` 引导信息
 
 创建新小说项目时，引导用户填写：
 
-- **书名**：小说的名称
+- **书名**：小说的名称（将作为项目目录名）
 - **题材**：从以下题材中选择或组合（最多2个）
   - 玄幻修仙、都市异能、末世、系统流、高武、西幻、无限流
   - 古言、宫斗宅斗、青春甜宠、豪门总裁、职场婚恋、种田
@@ -280,12 +318,14 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 - **目标字数**：默认200万字
 - **目标章节数**：默认600章
 
-### 初始化产出
+**用户确认后才创建项目目录。**
+
+#### 初始化产出（目录名 = 书名）
 
 ```
-小说项目/
+{书名}/                ← 项目根目录，目录名 = 小说书名
 ├── .webnovel/
-│   ├── state.json（运行时状态）
+│   ├── state.json（运行时状态：书名、题材、进度、风格设置等）
 │   ├── backups/（备份）
 │   ├── archive/（归档）
 │   └── summaries/（章节摘要）
@@ -301,6 +341,25 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 ├── 正文/
 └── 审查报告/
 ```
+
+#### state.json 中的关键字段
+
+```json
+{
+  "project_info": {
+    "title": "逆天改命",
+    "genre": "玄幻修仙",
+    "project_path": "逆天改命/",
+    "created_at": "2025-01-01"
+  },
+  "progress": {
+    "current_chapter": 0,
+    "total_words": 0
+  }
+}
+```
+
+`project_path` 字段用于所有技能确认当前工作目录。
 
 ## 写作流程（带自动审核评分）
 
