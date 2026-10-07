@@ -1,0 +1,23 @@
+{
+  "skill_name": "webnovel-dashboard",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "启动dashboard",
+      "expected_output": "启动本地Web服务器，打开可视化面板，展示项目概览、角色图谱、章节浏览等",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "/webnovel-dashboard",
+      "expected_output": "启动只读可视化面板，显示项目状态、实体关系、章节内容、追读力数据",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "帮我看看项目的整体情况",
+      "expected_output": "启动dashboard面板，展示项目概览信息",
+      "files": []
+    }
+  ]
+}

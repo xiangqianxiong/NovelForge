@@ -1,0 +1,23 @@
+{
+  "skill_name": "webnovel-query",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "查询主角林逸的当前状态",
+      "expected_output": "显示主角姓名、境界、等级、拥有的物品、技能、关系网、近期经历",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "查看所有未回收的伏笔",
+      "expected_output": "列出所有已埋设但未回收的伏笔，包含埋设章节、紧迫度、预计回收章节",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "查询第50章的摘要",
+      "expected_output": "第50章的简要内容摘要，包含主要事件、人物变化、伏笔埋设",
+      "files": []
+    }
+  ]
+}

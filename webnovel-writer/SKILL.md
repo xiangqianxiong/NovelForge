@@ -1,6 +1,6 @@
 ---
 name: "webnovel-writer"
-description: "长篇网文创作技能，帮助用户规划小说大纲、管理角色设定、追踪剧情伏笔、写作章节、审查质量。**当用户想要创建新小说项目、规划章节大纲、写作小说章节、审查章节质量时使用此技能。**"
+description: "长篇网文创作技能。如果用户已确认小说名称，使用书名创建项目目录，在该目录中进行所有创作。支持扫榜分析、拆解学习、大纲规划、章节写作、质量审查、去AI味、封面生成、故事导入等全流程功能。**当用户提到书名、想要创建新小说、规划章节大纲、写作小说章节、审查章节质量、扫榜分析、去AI味、生成封面、导入作品时使用此技能。**"
 ---
 
 # Webnovel Writer - 网文创作系统
@@ -11,30 +11,38 @@ description: "长篇网文创作技能，帮助用户规划小说大纲、管理
 ┌─────────────────────────────────────────────────────────────────────┐
 │                          SOLO Assistant                             │
 ├─────────────────────────────────────────────────────────────────────┤
-│  Skills (8个):                                                     │
-│    webnovel-init / webnovel-plan / webnovel-write / webnovel-review│
+│  Skills (13个):                                                     │
+│    webnovel-init / webnovel-plan / webnovel-write / webnovel-review │
 │    webnovel-query / webnovel-learn / webnovel-dashboard             │
 │    batch-write (批量写作)                                           │
+│    webnovel-scan (扫榜) / webnovel-analyze (拆解分析)               │
+│    webnovel-deslop (去AI味) / webnovel-cover (封面生成)             │
+│    webnovel-import (故事导入)                                       │
 ├─────────────────────────────────────────────────────────────────────┤
-│  Agents (19个):                                                     │
-│    Context Agent / Data Agent / Reviewer / Deconstruction          │
+│  Agents (19个):                                                      │
+│    Context Agent / Data Agent / Reviewer / Deconstruction           │
 │    Auto-Validator (提交前校验) / Foreshadow-Manager (伏笔管理)     │
-│    Regression-Tester (回归测试) / Emotion-Analyzer (情绪分析)       │
-│    Style-Learner (风格学习) / Batch-Writer (批量写作)              │
-│    Item-Tracker / Number-Checker / Knowledge-Boundary             │
-│    POV-Checker / Relationship-Matrix (势力关系)                    │
-│    Memory-Pack (精简记忆包) / Character-Growth (成长追踪)          │
-│    Periodic-Health (阶段体检) / Volume-Foreshadow (卷级伏笔)      │
+│    Regression-Tester (回归测试) / Emotion-Analyzer (情绪分析)         │
+│    Style-Learner (风格学习) / Batch-Writer (批量写作)               │
+│    Item-Tracker / Number-Checker / Knowledge-Boundary                │
+│    POV-Checker / Relationship-Matrix (势力关系)                      │
+│    Memory-Pack (精简记忆包) / Character-Growth (成长追踪)            │
+│    Periodic-Health (阶段体检) / Volume-Foreshadow (卷级伏笔)         │
 ├─────────────────────────────────────────────────────────────────────┤
-│  Data Layer:                                                        │
-│    .webnovel/state.json / index.db / memory                          │
-│    foreshadow_tracker.json / style_dna.json / queue_state.json        │
-│    items.json / numbers.json / knowledge.json / relationships.json     │
-│    character_growth.json / memory_packs/                              │
+│  Data Layer:                                                         │
+│    {书名}/.webnovel/state.json / summaries/ / backups/               │
+│    {书名}/.webnovel/foreshadow_tracker.json / style_dna.json         │
+│    {书名}/.webnovel/items.json / numbers.json / knowledge.json       │
+│    {书名}/.webnovel/relationships.json / character_growth.json       │
+│    {书名}/设定集/ / {书名}/大纲/ / {书名}/正文/ / {书名}/审查报告/    │
+│    拆文库/ (扫榜分析数据、拆解结果)                                  │
 ├─────────────────────────────────────────────────────────────────────┤
-│  References:                                                        │
-│    genre-profiles.md / reading-power-taxonomy.md / review-schema.md │
-│    physics-rules.md (物理法则追踪) / style-dna.md (风格基线)     │
+│  References:                                                         │
+│    genre-profiles.md / reading-power-taxonomy.md / review-schema.md  │
+│    physics-rules.md (物理法则追踪) / style-dna.md (风格基线)         │
+│    auto-review-workflow.md (自动审核评分)                            │
+│    banned-words.md (AI味检测) / anti-ai-writing.md (去AI方法)        │
+│    cover-styles.md (封面风格) / market-trends.md (市场趋势)          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -49,14 +57,71 @@ Item-Tracker      Number-Checker    Knowledge-Boundary
        ↓                    ↓                    ↓
 Relationship-Matrix     POV-Checker    Physics-Rules
                                               ↓
-                                        提交/下一章
+                                    自动审核评分 ⚠️
+                                              ↓
+                                    通过 → 提交/下一章
+                                    失败 → 打回优化
 ```
+
+## 完整创作流水线
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                          创作流程总览                                │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  1. 扫榜分析 → 2. 拆解学习 → 3. 项目初始化 → 4. 大纲规划          │
+│         ↓                ↓                ↓                ↓         │
+│  webnovel-scan    webnovel-analyze   webnovel-init    webnovel-plan │
+│                                                                     │
+│  5. 章节写作 → 6. 质量审查 → 7. AI味检测 → 8. 封面设计            │
+│         ↓                ↓                ↓                ↓         │
+│  webnovel-write  webnovel-review    webnovel-deslop  webnovel-cover │
+│                                                                     │
+│  9. 作品导入 ←───────────────────────────────────────── 10. 批量写作 │
+│  webnovel-import                                            batch-write │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### 各功能模块说明
+
+#### 扫榜模块（webnovel-scan）
+- 分析起点、番茄、晋江等平台排行榜
+- 提炼市场趋势与热门题材
+- 提取读者画像
+- 输出扫榜报告
+
+#### 拆解模块（webnovel-analyze）
+- 深度拆解爆款作品
+- 分析黄金三章结构
+- 提取人设、爽点、节奏模式
+- 生成文风分析报告
+
+#### 去AI味模块（webnovel-deslop）
+- 检测文本AI味等级
+- 6 Gate 系统性去AI
+- 保护创作意图
+- 输出润色报告
+
+#### 封面生成模块（webnovel-cover）
+- 分析书名题材
+- 设计封面视觉风格
+- 生成封面设计方案
+- 提供各平台尺寸规范
+
+#### 故事导入模块（webnovel-import）
+- 逆向解析已有作品
+- 生成标准项目结构
+- 自动识别角色、伏笔、时间线
+- 无缝衔接续写流程
 
 ## 什么时候使用这个技能
 
-**此技能专为网文创作场景设计。**
+**此技能专为网文创作场景设计。核心规则：一本书 = 一个项目目录。**
 
 使用此技能的时机：
+- 用户提到书名（如"我的《逆天改命》"、"帮我写《斗破苍穹》"）——自动进入或创建对应项目目录
 - 用户想要创建新的小说项目
 - 用户想要规划小说大纲（卷大纲、章大纲）
 - 用户想要写作小说章节
@@ -64,18 +129,31 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 - 用户想要查询角色、伏笔、剧情状态
 - 用户想要从参考书学习创作模式
 - 用户想要查看项目可视化面板
+- 用户想要扫榜分析市场趋势
+- 用户想要批量写作多章节
+- 用户想要去AI味润色文本
+- 用户想要生成小说封面
+- 用户想要导入已有作品续写
 
 ## 核心命令
 
-| 命令 | 功能 |
-|------|------|
-| `/webnovel-init` | 初始化小说项目，创建项目结构 |
-| `/webnovel-plan [卷号]` | 规划卷级大纲和章节安排 |
-| `/webnovel-write [章号]` | 写作完整章节（context → draft → review → polish） |
-| `/webnovel-review [范围]` | 六维质量审查 |
-| `/webnovel-query [关键词]` | 查询角色、伏笔、剧情状态 |
-| `/webnovel-learn [内容]` | 从会话中提取写作模式 |
-| `/webnovel-dashboard` | 启动可视化面板 |
+| 命令 | 功能 | 工作目录 |
+|------|------|---------|
+| `/webnovel-init` | 初始化小说项目，创建项目结构 | `{书名}/` （用户确认后创建） |
+| `/webnovel-plan [卷号]` | 规划卷级大纲和章节安排 | `{书名}/大纲/` |
+| `/webnovel-write [章号]` | 写作完整章节（带自动审核评分） | `{书名}/正文/` |
+| `/webnovel-review [范围]` | 六维质量审查 | `{书名}/审查报告/` |
+| `/webnovel-query [关键词]` | 查询角色、伏笔、剧情状态 | `{书名}/.webnovel/` 读取 |
+| `/webnovel-learn [内容]` | 从会话中提取写作模式 | `{书名}/设定集/` 写入 |
+| `/webnovel-dashboard` | 启动可视化面板 | `{书名}/` 读取 |
+| `/batch-write [范围]` | 批量写作多章节 | `{书名}/正文/` |
+| `/webnovel-scan` | 扫榜分析市场趋势 | 不依赖项目目录 |
+| `/webnovel-analyze` | 拆解分析爆款作品 | 有项目目录则从 `{书名}/正文/` 读取 |
+| `/webnovel-deslop` | 去除文章AI味 | 有项目目录则在 `{书名}/` 内工作 |
+| `/webnovel-cover` | 生成小说封面 | 有项目目录则从 `state.json` 复用信息 |
+| `/webnovel-import` | 导入已有作品续写 | 新建 `{书名}/` 目录（与 init 同格式） |
+
+**规则：所有创作类命令必须先找到项目目录才能执行。找不到时统一提示："尚未初始化小说项目，请先运行 `/webnovel-init`"**
 
 ## Agent 分工
 
@@ -190,13 +268,46 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 | 时间法则 | 突破耗时合理，时间线顺序 |
 | 因果法则 | 获得必有代价，信息传播有媒介 |
 
-## 项目初始化流程
+## 项目目录管理流程
 
-### `/webnovel-init` 引导信息
+### 核心规则：一本书 = 一个目录
+
+- 每本小说对应一个独立的项目目录，目录名 = 小说书名（如 `逆天改命/`、`斗破苍穹/`）
+- 项目目录是所有创作活动的唯一工作空间：正文、设定、大纲、状态、审查报告、学习成果全部在其中
+- 工作目录根目录下可以同时存在多本书的项目目录，互不干扰
+
+### 项目目录识别方法
+
+系统通过以下方式识别项目目录：
+
+1. **包含 `.webnovel/state.json`**——这是项目目录的核心标识
+2. **目录名是小说书名**——通过 context 判断（用户提到"我的《逆天改命》"等）
+
+### 所有技能的统一前置检查
+
+| 技能 | 目录检查策略 | 后续操作 |
+|------|------------|---------|
+| `/webnovel-init` | 检查是否已存在同名目录，存在则直接复用 | 不存在则创建新目录（需用户确认后才创建） |
+| `/webnovel-plan` | 检查是否存在项目目录，不存在则提示 init | 存在则在目录下的 `大纲/` 规划 |
+| `/webnovel-write` | 检查是否存在项目目录，不存在则提示 init | 存在则在目录下的 `正文/` 写作 |
+| `/webnovel-review` | 检查是否存在项目目录，不存在则提示 init | 存在则从 `正文/` 读取章节审查 |
+| `/webnovel-query` | 检查是否存在项目目录，不存在则提示 init | 存在则从 `.webnovel/` 查询信息 |
+| `/webnovel-learn` | 检查是否存在项目目录，不存在则提示 init | 存在则写入 `设定集/` 或 `.webnovel/` |
+| `/webnovel-dashboard` | 检查是否存在项目目录，不存在则提示 init | 存在则从目录读取状态 |
+| `/batch-write` | 检查是否存在项目目录，不存在则提示 init | 存在则在目录下的 `正文/` 批量写作 |
+| `/webnovel-cover` | 检查是否存在项目目录，存在则复用书名题材信息 | 有目录则直接从 state.json 读取，无则正常引导 |
+| `/webnovel-import` | 反向解析原文，创建项目目录（目录名 = 书名） | 与 webnovel-init 格式完全一致，导入后可直接写 |
+| `/webnovel-analyze` | 可选检查——如果是项目目录中的书，从 `正文/` 读原文 | 拆解结果保存到项目目录（如有） |
+| `/webnovel-scan` | 扫榜分析不依赖项目目录 | 正常运行 |
+| `/webnovel-deslop` | 检查是否存在项目目录（从项目目录内文本去味） | 有目录则在目录内工作，无则独立运行 |
+
+### 项目初始化流程
+
+#### `/webnovel-init` 引导信息
 
 创建新小说项目时，引导用户填写：
 
-- **书名**：小说的名称
+- **书名**：小说的名称（将作为项目目录名）
 - **题材**：从以下题材中选择或组合（最多2个）
   - 玄幻修仙、都市异能、末世、系统流、高武、西幻、无限流
   - 古言、宫斗宅斗、青春甜宠、豪门总裁、职场婚恋、种田
@@ -207,12 +318,14 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 - **目标字数**：默认200万字
 - **目标章节数**：默认600章
 
-### 初始化产出
+**用户确认后才创建项目目录。**
+
+#### 初始化产出（目录名 = 书名）
 
 ```
-小说项目/
+{书名}/                ← 项目根目录，目录名 = 小说书名
 ├── .webnovel/
-│   ├── state.json（运行时状态）
+│   ├── state.json（运行时状态：书名、题材、进度、风格设置等）
 │   ├── backups/（备份）
 │   ├── archive/（归档）
 │   └── summaries/（章节摘要）
@@ -229,34 +342,97 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 └── 审查报告/
 ```
 
-## 写作流程
+#### state.json 中的关键字段
+
+```json
+{
+  "project_info": {
+    "title": "逆天改命",
+    "genre": "玄幻修仙",
+    "project_path": "逆天改命/",
+    "created_at": "2025-01-01"
+  },
+  "progress": {
+    "current_chapter": 0,
+    "total_words": 0
+  }
+}
+```
+
+`project_path` 字段用于所有技能确认当前工作目录。
+
+## 写作流程（带自动审核评分）
 
 ### `/webnovel-write` 完整流程
 
-1. **写前准备（Context Agent）**
-   - 读取 MASTER_SETTING.json、大纲、已有章节
-   - 查询角色状态、伏笔、世界规则
-   - 生成五段式写作任务书
+#### Phase 1: 写前准备（Context Agent）
+1. 读取 MASTER_SETTING.json、大纲、已有章节
+2. 查询角色状态、伏笔、世界规则
+3. 生成五段式写作任务书
 
-2. **起草正文**
-   - 按照任务书写作
-   - 遵守防幻觉三定律
-   - 应用 Strand 节奏控制
+#### Phase 2: 起草正文
+1. 按照任务书写作
+2. 遵守防幻觉三定律
+3. 应用 Strand 节奏控制
 
-3. **质量审查（Reviewer）**
-   - 六维审查
-   - 输出结构化问题清单
-   - 不评分，只找问题
+#### Phase 3: 质量审查（Reviewer）
+1. 执行六维审查
+2. AI味检测
+3. 设定一致性检查
+4. 输出结构化问题清单
 
-4. **润色修改**
-   - 根据审查意见修改
-   - 保持角色一致性
-   - 优化节奏和爽点
+#### Phase 4: 自动审核评分 ⚠️【自动执行】
 
-5. **数据更新（Data Agent）**
-   - 提取实体和状态变更
-   - 生成章节摘要
-   - 更新伏笔追踪
+**自动评分维度：**
+
+| 维度 | 权重 | 通过阈值 |
+|------|------|----------|
+| High-point | 20% | >= 15/20 |
+| Consistency | 20% | >= 15/20 |
+| Pacing | 15% | >= 11/15 |
+| OOC | 15% | >= 12/15 |
+| Continuity | 15% | >= 11/15 |
+| Reader-pull | 15% | >= 11/15 |
+
+**评分等级：**
+- **优秀（90-100）**：✅ 直接通过
+- **良好（75-89）**：✅ 通过
+- **合格（60-74）**：⚠️ 通过，需注意问题
+- **不合格（<60）**：❌ 打回优化
+
+**通过条件（必须同时满足）：**
+1. 总分 >= 75
+2. 无 critical 级别问题
+3. 高优先级问题 <= 3个
+4. AI味检测通过
+5. 字数在目标范围内
+
+**审核结果：**
+
+✅ **通过时：**
+- 自动保存到正式目录
+- 更新 state.json
+- 生成评估报告
+
+❌ **打回时：**
+- 生成详细问题清单
+- 提供修改建议
+- 标记为待优化状态
+- 等待修复后重新提交
+
+**参考资料：** `references/auto-review-workflow.md`
+
+#### Phase 5: 润色修改
+1. 根据审查意见修改
+2. 保持角色一致性
+3. 优化节奏和爽点
+4. 修复审核发现的问题
+
+#### Phase 6: 数据更新（Data Agent）
+1. 提取实体和状态变更
+2. 生成章节摘要
+3. 更新伏笔追踪
+4. 保存最终版本
 
 ## 题材配置
 
@@ -304,7 +480,9 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 - `references/genre-profiles.md` - 37种题材画像
 - `references/reading-power-taxonomy.md` - 追读力学
 - `references/review-schema.md` - 审查规范
-- `genres/` - 6个详细题材配置目录
+- `references/auto-review-workflow.md` - 自动审核评分工作流 ⚠️
+- `references/grading-standards.md` - 质量评分标准
+- `genres/` - 13个详细题材配置目录
 
 ## 注意事项
 
@@ -313,3 +491,53 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 - 保持前后设定一致
 - 合理安排爽点分布
 - 留有悬念吸引追读
+- ⚠️ **所有章节必须通过自动审核评分才能提交**
+
+## 边界条件处理
+
+### 异常场景处理
+
+| 场景 | 触发条件 | 处理动作 |
+|------|----------|----------|
+| 网络故障 | API调用失败 | 重试3次，失败则暂停并通知用户 |
+| 文件损坏 | 章节文件读取失败 | 提示用户检查文件，提供恢复建议 |
+| 资源不足 | 内存/存储不足 | 清理缓存，提示用户释放空间 |
+| 用户中断 | 用户中途取消 | 保存当前进度，支持恢复 |
+| 版本冲突 | Git冲突 | 提示用户手动解决或自动合并 |
+| **审核不通过** | 评分 < 75 或存在阻断问题 | 标记为待优化，等待用户修复 |
+
+### 中断恢复机制
+
+1. **自动保存**：每5分钟自动保存写作进度
+2. **断点续写**：支持从中断处继续写作
+3. **版本回滚**：支持恢复到历史版本
+4. **冲突解决**：自动检测并提示版本冲突
+5. **审核失败**：保存审核报告，支持从问题点继续优化
+
+## 检查点设计
+
+### 用户确认检查点
+
+| 检查点 | 触发时机 | 确认内容 |
+|--------|----------|----------|
+| 项目初始化 | 创建新项目前 | 确认书名、题材、主角信息 |
+| 大纲规划 | 保存大纲前 | 确认卷章结构、关键节点 |
+| 批量写作 | 启动批量任务前 | 确认章节范围、自动处理选项 |
+| 质量审查 | 修改章节前 | 确认是否应用审查建议 |
+| 风格切换 | 切换写作风格前 | 确认风格变更影响 |
+| **审核失败** | 章节未通过审核时 | 确认修复方案 |
+
+### 撤销机制
+
+- **单步撤销**：支持撤销上一步操作
+- **历史记录**：保留最近10次修改记录
+- **版本对比**：支持查看修改前后对比
+- **审核回退**：支持回退到审核前的版本
+
+## 安全边界
+
+- **文件操作**：仅允许修改项目目录内文件
+- **权限控制**：不允许访问系统敏感目录
+- **数据保护**：自动备份重要文件
+- **异常退出**：自动保存状态，防止数据丢失
+- **审核机制**：未通过审核的章节不允许提交
