@@ -1,6 +1,6 @@
 ---
 name: "webnovel-write"
-description: "写作完整章节。先检查是否存在已确认书名的项目目录（如"逆天改命/"），在该目录内进行创作。执行 context → draft → review → polish 完整流程。"
+description: "写作完整章节。先检查是否存在已确认书名的项目目录（如“逆天改命/“），在该目录内进行创作。执行 context → draft → review → polish 完整流程。"
 ---
 
 # `/webnovel-write` - 写作章节
