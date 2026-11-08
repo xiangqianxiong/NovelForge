@@ -148,7 +148,7 @@ NovelForge/
     │   ├── review-schema.md
     │   ├── style-dna.md
     │   └── ...
-    ├── skills/            # 7个核心技能
+    ├── skills/            # 13个核心技能
     │   ├── webnovel-init/
     │   ├── webnovel-plan/
     │   ├── webnovel-write/
@@ -177,4 +177,4 @@ NovelForge/
 - 悬疑灵异、规则怪谈、克苏鲁、知乎短篇
 
 ## 更多信息
-详细使用说明请查看 [webnovel-writer/README.md](file:///workspace/.trae/skills/webnovel-writer/README.md)
+详细使用说明请查看 [webnovel-writer/README.md](file:///workspace/webnovel-writer/README.md)

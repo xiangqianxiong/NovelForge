@@ -482,6 +482,7 @@ Relationship-Matrix     POV-Checker    Physics-Rules
 - `references/review-schema.md` - 审查规范
 - `references/auto-review-workflow.md` - 自动审核评分工作流 ⚠️
 - `references/grading-standards.md` - 质量评分标准
+- `references/validation-guide.md` - 效果验证指南
 - `genres/` - 13个详细题材配置目录
 
 ## 注意事项
