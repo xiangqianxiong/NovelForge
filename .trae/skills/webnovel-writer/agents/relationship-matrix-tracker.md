@@ -87,32 +87,19 @@ model: inherit
 
 ### 4.1 查询两势力关系
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" relationship get --from "sky_sword_sect" --to "magic_sect"
-```
+读取 `{PROJECT_ROOT}/.webnovel/relationships.json`，返回 `sky_sword_sect` 与 `magic_sect` 之间的关系类型、历史记录与待转变项。
 
 ### 4.2 查询角色所属势力态度
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" relationship faction-attitude --character "xiaoyan" --target "magic_sect"
-```
+读取 `{PROJECT_ROOT}/.webnovel/relationships.json`，结合角色 `xiaoyan` 的 `character_faction_relations` 与其阵营立场，返回其对 `magic_sect` 的态度。
 
 ### 4.3 记录关系变更
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" relationship change \
-  --from "sky_sword_sect" \
-  --to "qin_clan" \
-  --new_state "仇恨" \
-  --chapter 30 \
-  --reason "灭门之仇"
-```
+读取 `{PROJECT_ROOT}/.webnovel/relationships.json`，为 `sky_sword_sect` → `qin_clan` 的关系追加一条 `history` 记录（`chapter`、`event`、`from_state`、`to_state`、`intensity_change`），更新 `relationship_type` 与 `current_chapter`，写回文件。
 
 ### 4.4 检测关系异常
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" relationship check-consistency --chapter 50
-```
+读取 `{PROJECT_ROOT}/.webnovel/relationships.json` 及第 50 章正文，按第 6 章检测规则核对态度突变、阵营一致与铺垫，输出第 7 章格式的检测报告。
 
 ## 5. 关系转变规则
 

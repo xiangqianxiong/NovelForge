@@ -11,26 +11,26 @@ model: inherit
 
 ## 2. 工具
 
-```bash
+```
 # 获取核心实体
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" index get-core-entities
+读取 `{PROJECT_ROOT}/.webnovel/state.json`，返回核心实体列表。
 
 # 获取近期出场
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" index recent-appearances --limit 20
+读取 `{PROJECT_ROOT}/.webnovel/state.json` 与 `{PROJECT_ROOT}/.webnovel/summaries/`，返回最近 20 章出场实体。
 
 # 获取实体别名
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" index get-aliases --entity "{entity_id}"
+读取 `{PROJECT_ROOT}/.webnovel/state.json`，返回实体 `{entity_id}` 的别名。
 
 # 别名查询
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" index get-by-alias --alias "{alias}"
+读取 `{PROJECT_ROOT}/.webnovel/state.json`，按别名 `{alias}` 反查实体。
 
 # 章节提交
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" chapter-commit \
-  --chapter {chapter} \
-  --review-result "{project_root}/.webnovel/tmp/review_results.json" \
-  --fulfillment-result "{project_root}/.webnovel/tmp/fulfillment_result.json" \
-  --disambiguation-result "{project_root}/.webnovel/tmp/disambiguation_result.json" \
-  --extraction-result "{project_root}/.webnovel/tmp/extraction_result.json"
+读取 tmp 产物，投影写入 `{PROJECT_ROOT}/.webnovel/state.json`，并把本章摘要写入 `{PROJECT_ROOT}/.webnovel/summaries/`：
+- chapter: {chapter}
+- `{PROJECT_ROOT}/.webnovel/tmp/review_results.json`
+- `{PROJECT_ROOT}/.webnovel/tmp/fulfillment_result.json`
+- `{PROJECT_ROOT}/.webnovel/tmp/disambiguation_result.json`
+- `{PROJECT_ROOT}/.webnovel/tmp/extraction_result.json`
 ```
 
 ## 3. 流程

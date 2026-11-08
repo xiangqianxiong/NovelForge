@@ -1,7 +1,7 @@
 ---
 name: memory-pack-generator
 description: 生成精简记忆包。按需提供轻量/标准/完整三档上下文。
-tools: Read, Bash
+tools: Read, Write, Bash
 model: inherit
 ---
 
@@ -199,10 +199,15 @@ model: inherit
 
 ### 4.1 生成记忆包
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" memory-pack generate \
-  --chapter 51 \
-  --pack_type "light|standard|full"
+```
+读取摘要与状态文件，按需生成记忆包：
+
+1. 读取 `{PROJECT_ROOT}/.webnovel/summaries/` 下最近章节摘要；
+2. 读取 `{PROJECT_ROOT}/.webnovel/state.json` 获取当前进度（当前章号、活跃伏笔）；
+3. 根据第 3 节决策选中包类型（light / standard / full）；
+4. 按第 2 节对应档位结构输出记忆包 JSON。
+
+生成后将结果写入 `{PROJECT_ROOT}/.webnovel/memory_packs/{pack_type}/ch0051_{pack_type}.json`。
 ```
 
 ### 4.2 包内容约束

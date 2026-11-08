@@ -43,7 +43,6 @@ model: inherit
 本 agent 是 init 前置分析器，只返回结构化结果，不写任何文件。init 早期尚未生成书项目目录，因此不得假设 `.webnovel/tmp/` 或任何项目路径存在。
 
 **严禁创建、写入或修改**：
-- `.story-system/`
 - `.webnovel/`
 - `设定集/`
 - `大纲/`

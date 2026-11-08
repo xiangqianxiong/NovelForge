@@ -1,7 +1,7 @@
 ---
 name: periodic-health-check
 description: 每10章阶段性体检，检测风格漂移、伏笔回收率、人物弧线。
-tools: Read, Bash
+tools: Read, Write, Bash
 model: inherit
 ---
 
@@ -148,14 +148,14 @@ model: inherit
 
 ### 5.1 触发体检
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" health-check --chapter 30
+```
+按第 3 节维度执行第 30 章体检，生成体检报告后写入 `{PROJECT_ROOT}/审查报告/`，并将 `next_check` 更新写入 `{PROJECT_ROOT}/.webnovel/state.json`。
 ```
 
 ### 5.2 获取体检报告
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" health-check report --chapter 30
+```
+读取 `{PROJECT_ROOT}/审查报告/` 中第 30 章的体检报告并输出。
 ```
 
 ## 6. 校准动作

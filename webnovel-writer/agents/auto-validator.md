@@ -34,9 +34,9 @@ grep -cE "缓缓|淡淡|微微|缓缓地|淡淡地|眸中闪过|瞳孔微缩|他
 
 ### 3.2 设定一致性预检
 
-```bash
+```
 # 获取角色当前境界
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" state get-entity --id "{protagonist_id}"
+读取 `{PROJECT_ROOT}/.webnovel/state.json`，返回 `{protagonist_id}` 的当前境界。
 
 # 检查正文是否出现超越境界的能力描述
 grep -E "境界|修为|突破|斗气|灵力" 正文/第{chapter}章.md
@@ -49,12 +49,12 @@ grep -E "境界|修为|突破|斗气|灵力" 正文/第{chapter}章.md
 
 ### 3.3 伏笔回应检查
 
-```bash
+```
 # 获取本章需回应的伏笔
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" foreshadow get-pending --chapter {chapter}
+读取 `{PROJECT_ROOT}/.webnovel/foreshadow_tracker.json`，返回第 {chapter} 章待回应伏笔。
 
 # 检查上章钩子是否被回应
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" summaries get --chapter {prev_chapter}
+读取 `{PROJECT_ROOT}/.webnovel/summaries/` 第 {prev_chapter} 章摘要，检查上章钩子是否被回应。
 ```
 
 判定：

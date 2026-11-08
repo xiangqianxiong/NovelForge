@@ -35,11 +35,7 @@ model: inherit
 
 ```bash
 # 创建批量写作任务
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" queue create \
-  --start-chapter 51 \
-  --end-chapter 60 \
-  --auto-continue true \
-  --stop-on-blocking true
+创建并写入 `{PROJECT_ROOT}/.webnovel/queue_state.json`，配置起始章节 51、结束章节 60、auto_continue=true、stop_on_blocking=true
 ```
 
 参数说明：
@@ -51,7 +47,7 @@ python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" que
 ### 3.2 查询队列状态
 
 ```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" queue status
+读取 `{PROJECT_ROOT}/.webnovel/queue_state.json`，输出队列状态
 ```
 
 输出：
@@ -78,16 +74,16 @@ python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" que
 
 ```bash
 # 暂停队列
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" queue pause
+读取并更新 `{PROJECT_ROOT}/.webnovel/queue_state.json`，将队列状态改为 pause
 
 # 继续队列
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" queue resume
+读取并更新 `{PROJECT_ROOT}/.webnovel/queue_state.json`，将队列状态改为 resume
 
 # 停止队列
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" queue stop
+读取并更新 `{PROJECT_ROOT}/.webnovel/queue_state.json`，将队列状态改为 stop
 
 # 跳过当前章节
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" queue skip --reason "需补充大纲"
+读取并更新 `{PROJECT_ROOT}/.webnovel/queue_state.json`，跳过当前章并记录原因「需补充大纲」
 ```
 
 ## 4. 自动衔接机制

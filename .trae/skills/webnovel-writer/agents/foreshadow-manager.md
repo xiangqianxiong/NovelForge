@@ -91,9 +91,7 @@ def calculate_urgency(current_chapter, expected_payoff, foreshadow_type):
 
 ### 5.1 查询活跃伏笔
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" foreshadow list --status active
-```
+读取 `{PROJECT_ROOT}/.webnovel/foreshadow_tracker.json`，筛选 `status == "active"` 的活跃伏笔，输出下列 JSON：
 
 输出：
 ```json
@@ -129,29 +127,15 @@ python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" for
 
 ### 5.2 添加伏笔
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" foreshadow add \
-  --id "{unique_id}" \
-  --type "minor" \
-  --content "神秘人来信" \
-  --planted_chapter 10 \
-  --expected_payoff 15
-```
+读取 `{PROJECT_ROOT}/.webnovel/foreshadow_tracker.json`，向 `foreshadows` 数组新增一条记录，填写 `id`、`type`、`content`、`planted_chapter`、`expected_payoff_chapter` 等字段，并同步更新 `stats`，写回文件。
 
 ### 5.3 回收伏笔
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" foreshadow payoff \
-  --id "mysterious_visitor" \
-  --chapter 14 \
-  --result "partial|full"
-```
+读取 `{PROJECT_ROOT}/.webnovel/foreshadow_tracker.json`，将 id 为 `mysterious_visitor` 的伏笔 `status` 改为 `paid`，填写 `actual_payoff_chapter` 与 `payoff_refs`（`partial|full`），并同步更新 `stats`，写回文件。
 
 ### 5.4 获取回收建议
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" foreshadow suggest-payoff --chapter 50
-```
+读取 `{PROJECT_ROOT}/.webnovel/foreshadow_tracker.json`，按第 6 章预警规则计算各伏笔的 `urgency`、超期章数与新钩预算，输出下列建议 JSON：
 
 输出：
 ```json

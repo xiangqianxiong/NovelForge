@@ -76,43 +76,23 @@ model: inherit
 
 ### 4.1 检查章节数字一致性
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" number check --chapter 50
-```
+读取 `{PROJECT_ROOT}/.webnovel/numbers.json` 及第 50 章正文，按第 5 章一致性检查规则核对年龄、时间线、距离、货币、数量，输出第 6 章格式的检测报告。
 
 ### 4.2 查询角色年龄
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" number age --entity "xiaoyan" --at_chapter 50
-```
+读取 `{PROJECT_ROOT}/.webnovel/numbers.json`，按第 8 章年龄公式计算角色 `xiaoyan` 在第 50 章时的年龄并返回。
 
 ### 4.3 查询货币余额
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" number currency --entity "xiaoyan" --currency "spirit_stones"
-```
+读取 `{PROJECT_ROOT}/.webnovel/numbers.json`，返回角色 `xiaoyan` 的 `spirit_stones` 货币余额及收支记录。
 
 ### 4.4 记录数字变更
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" number record \
-  --chapter 50 \
-  --type "currency" \
-  --entity "xiaoyan" \
-  --field "spirit_stones" \
-  --delta -100 \
-  --reason "购买丹药"
-```
+读取 `{PROJECT_ROOT}/.webnovel/numbers.json`，为角色 `xiaoyan` 的货币 `spirit_stones` 追加一条变更记录（`chapter`、`delta`、`reason`），更新 `current` 余额，并刷新 `consistency_checks`，写回文件。
 
 ### 4.5 记录时间跳跃
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" number time-jump \
-  --from_chapter 10 \
-  --to_chapter 15 \
-  --days_skipped 30 \
-  --reason "闭关修炼"
-```
+读取 `{PROJECT_ROOT}/.webnovel/numbers.json`，向 `time_elapsed.time_jumps` 追加一条时间跳跃记录（`from`、`to`、`skip_days`、`reason`），并更新 `estimated_days`，写回文件。
 
 ## 5. 一致性检查规则
 

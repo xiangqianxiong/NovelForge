@@ -116,15 +116,11 @@ model: inherit
 
 ### 5.1 检查视角泄漏
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" pov check --chapter 50
-```
+读取 `{PROJECT_ROOT}/正文/第NNNN章-*.md` 第 50 章内容，按第 4 章泄漏类型与第 6 章关键词检测流程扫描视角泄漏，在响应中输出第 7 章格式的检测报告（不写文件）。
 
 ### 5.2 统计视角分布
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" pov stats --chapter 50
-```
+读取 `{PROJECT_ROOT}/正文/第NNNN章-*.md` 第 50 章内容，统计各视角类型、泄漏类型数量与分布，输出统计结论。
 
 ## 6. 检测模式
 

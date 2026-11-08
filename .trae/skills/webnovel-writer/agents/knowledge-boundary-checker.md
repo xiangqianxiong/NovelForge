@@ -118,31 +118,19 @@ model: inherit
 
 ### 5.1 查询角色已知信息
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" knowledge list --entity "xiaoyan"
-```
+读取 `{PROJECT_ROOT}/.webnovel/knowledge.json`，返回角色 `xiaoyan` 当前已知的秘密、世界规则、信息渠道与未知界限。
 
 ### 5.2 检查角色本章知识来源
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" knowledge check --chapter 50 --entity "xiaoyan"
-```
+读取 `{PROJECT_ROOT}/.webnovel/knowledge.json` 及第 50 章正文，核对角色 `xiaoyan` 本章使用的每条信息是否符合其知识边界与获取渠道，输出第 7 章格式的检测报告。
 
 ### 5.3 记录知识获取
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" knowledge add \
-  --entity "xiaoyan" \
-  --knowledge_id "yaolao_identity" \
-  --source "yaolao_told" \
-  --chapter 30
-```
+读取 `{PROJECT_ROOT}/.webnovel/knowledge.json`，将 `yaolao_identity` 加入角色 `xiaoyan` 的 `known_secrets`，并在 `knowledge_known_by` 中更新其 `known_by`、`revealed_chapter` 与获取来源，写回文件。
 
 ### 5.4 检测信息泄露
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" knowledge leak-check --chapter 50
-```
+读取 `{PROJECT_ROOT}/.webnovel/knowledge.json` 及第 50 章正文，按第 6 章违规类型检测超范围知识、无来源知识与跨阵营情报，输出第 7 章格式的检测报告。
 
 ## 6. 知识违规检测
 

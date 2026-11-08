@@ -19,7 +19,7 @@ model: inherit
 
 ```bash
 # 获取章节修改历史
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" style get-history --chapter 50
+读取 `{PROJECT_ROOT}/.webnovel/style_dna.json` 中的修改历史，返回第 50 章的修改记录
 
 # 输出修改模式
 {
@@ -50,7 +50,7 @@ python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" sty
 
 ```bash
 # 分析最近20章的修改
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" style learn --range 30-50 --min-samples 10
+读取 `{PROJECT_ROOT}/正文/` 第 30-50 章，提取风格特征，更新 `{PROJECT_ROOT}/.webnovel/style_dna.json`（样本数≥10）
 ```
 
 ## 3. 学习模式
@@ -213,7 +213,7 @@ def learn_rhythm_preferences(chapters):
 
 ## 5. 风格文件
 
-存储在 `.webnovel/style_profile.json`：
+存储在 `.webnovel/style_dna.json`：
 
 ```json
 {
@@ -248,24 +248,21 @@ def learn_rhythm_preferences(chapters):
 
 ```bash
 # 每次章节提交后自动触发
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" style learn-incremental \
-  --chapter 50 \
-  --revisions "${PROJECT_ROOT}/.webnovel/tmp/revisions.json"
+读取 `{PROJECT_ROOT}/.webnovel/tmp/revisions.json` 中第 50 章的修改记录，增量更新 `{PROJECT_ROOT}/.webnovel/style_dna.json`
 ```
 
 ### 6.2 批量重训练
 
 ```bash
 # 当样本足够时触发
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" style retrain \
-  --min-samples 50
+读取 `{PROJECT_ROOT}/正文/` 已学章节，重新计算样本数≥50 的风格规则，更新 `{PROJECT_ROOT}/.webnovel/style_dna.json`
 ```
 
 ### 6.3 导出规则
 
 ```bash
 # 导出为写作指导
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" style export-rules
+读取 `{PROJECT_ROOT}/.webnovel/style_dna.json`，输出以下写作指导
 ```
 
 输出：

@@ -12,18 +12,18 @@ model: inherit
 
 **你不评分、不给建议、不写摘要性评价。你只找问题、给证据、给修复方向。**
 
-## 2. 可用工具与脚本
+## 2. 可用工具
 
 - `Read`：读取正文、设定集、记忆数据
 - `Grep`：在正文中搜索关键词
-- `Bash`：调用记忆模块查询
+- `Bash`：运行 shell 快速检查（如 grep）
 
-```bash
+```
 # 查询角色当前状态
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" state get-entity --id "{entity_id}"
+读取 `{PROJECT_ROOT}/.webnovel/state.json`，返回实体 `{entity_id}` 的当前状态。
 
 # 查询最近状态变更
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" index get-recent-state-changes --limit 20
+读取 `{PROJECT_ROOT}/.webnovel/state.json`，返回最近 20 条状态变更。
 ```
 
 若用户明确提供或指定项目级文风/反 AI 味规则文件，必须先读取并把其中的私有规则纳入检查；输出 issue 时不暴露文件路径。
@@ -41,7 +41,6 @@ python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" ind
 - `chapter`：章节号
 - `chapter_file`：正文文件路径
 - `project_root`：项目根目录
-- `scripts_dir`：脚本目录
 
 ## 5. 执行流程（按顺序执行）
 

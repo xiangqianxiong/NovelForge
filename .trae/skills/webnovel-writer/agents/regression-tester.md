@@ -28,14 +28,12 @@ model: inherit
 - 当前位置 vs 之前章节位置（有合理移动路径）
 - 人际关系变化是否连续
 
-```bash
+```
 # 获取角色在指定章节的状态
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" knowledge query-entity-state \
-  --entity "xiaoyan" --at-chapter 45
+读取 `{PROJECT_ROOT}/.webnovel/knowledge.json`，返回角色 `xiaoyan` 在第 45 章的状态。
 
 # 获取角色在另一章节的状态
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" knowledge query-entity-state \
-  --entity "xiaoyan" --at-chapter 50
+读取 `{PROJECT_ROOT}/.webnovel/knowledge.json`，返回角色 `xiaoyan` 在第 50 章的状态。
 
 # 对比两个状态
 ```
@@ -194,11 +192,9 @@ def contradicts(new_claim, historical):
 
 针对大量章节的回归测试：
 
-```bash
+```
 # 检测最新10章的回归问题
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" regression test \
-  --range 40-50 \
-  --quick
+读取 `{PROJECT_ROOT}/.webnovel/regression_config.json` 与第 40-50 章正文（`{PROJECT_ROOT}/正文/第0040章-*.md` ~ `第0050章-*.md`），执行快速回归检测，输出简报。
 ```
 
 输出简报：

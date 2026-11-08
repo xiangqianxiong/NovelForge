@@ -81,20 +81,20 @@ model: inherit
 
 ### 3.1 获取当前卷概览
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" volume foreshadow --current
+```
+读取 `{PROJECT_ROOT}/.webnovel/foreshadow_tracker.json`，按当前卷筛选伏笔，输出当前卷概览。
 ```
 
 ### 3.2 获取指定卷概览
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" volume foreshadow --volume 2
+```
+读取 `{PROJECT_ROOT}/.webnovel/foreshadow_tracker.json`，筛选第 2 卷的伏笔，输出该卷概览。
 ```
 
 ### 3.3 获取章节伏笔关联
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" volume foreshadow --chapter 30
+```
+读取 `{PROJECT_ROOT}/.webnovel/foreshadow_tracker.json` 及 `{PROJECT_ROOT}/大纲/`，输出第 30 章的伏笔关联。
 ```
 
 ## 4. 卷级仪表盘

@@ -65,54 +65,27 @@ model: inherit
 
 ### 4.1 查询物品状态
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" item get --id "xuanbing_sword"
-```
+读取 `{PROJECT_ROOT}/.webnovel/items.json`，返回物品 `xuanbing_sword` 的当前状态与流转记录。
 
 ### 4.2 添加物品
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" item add \
-  --id "mysterious_pill" \
-  --name "神秘丹药" \
-  --type "丹药" \
-  --tier "未知" \
-  --owner "xiaoyan" \
-  --chapter 15 \
-  --method "击败敌人获得"
-```
+读取 `{PROJECT_ROOT}/.webnovel/items.json`，向 `items` 数组新增一条记录，填写 `item_id`、`name`、`type`、`tier`、`current_owner`、`acquisition_chapter`、`acquisition_method` 等字段，并同步更新 `stats`，写回文件。
 
 ### 4.3 更新物品状态
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" item update \
-  --id "xuanbing_sword" \
-  --action "used" \
-  --chapter 20
-```
+读取 `{PROJECT_ROOT}/.webnovel/items.json`，为物品 `xuanbing_sword` 追加一条 `usage_history` 记录（`chapter`、`action`、`purpose` 等），必要时更新 `status` 与 `usage_count`，写回文件。
 
 ### 4.4 转移物品所有权
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" item transfer \
-  --id "mysterious_pill" \
-  --from "xiaoyan" \
-  --to "yaolao" \
-  --chapter 30 \
-  --reason "交易"
-```
+读取 `{PROJECT_ROOT}/.webnovel/items.json`，将物品 `mysterious_pill` 的 `current_owner` 从 `xiaoyan` 改为 `yaolao`，记录转让章节与原因，并递增 `transfer_count`，写回文件。
 
 ### 4.5 查询角色持有物品
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" item list-by-owner --owner "xiaoyan"
-```
+读取 `{PROJECT_ROOT}/.webnovel/items.json`，筛选 `current_owner == "xiaoyan"` 的物品并返回列表。
 
 ### 4.6 检测物品异常
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" item check-consistency --chapter 50
-```
+读取 `{PROJECT_ROOT}/.webnovel/items.json` 及对应章节正文，按第 7 章异常检测规则核对所有权、数量与状态，输出第 8 章格式的检测报告。
 
 ## 5. 物品流转表
 

@@ -15,42 +15,42 @@ model: inherit
 `Read`/`Grep`/`Bash`
 
 ### 核心命令
-```bash
+```
 # 获取项目根目录
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" where
+读取 `{PROJECT_ROOT}/.webnovel/state.json`，定位项目根目录与存储路径。
 
 # 加载写作上下文
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" memory-contract load-context --chapter {NNNN}
+读取 `{PROJECT_ROOT}/.webnovel/state.json` 与 `{PROJECT_ROOT}/.webnovel/summaries/` 近章摘要，组装第 {NNNN} 章写作上下文（合同/伏笔/规则/主角状态）。
 
 # 查询实体状态
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" memory-contract query-entity --id "{entity_id}"
+读取 `{PROJECT_ROOT}/.webnovel/state.json`，返回实体 `{entity_id}` 的状态。
 
 # 查询世界规则
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" memory-contract query-rules --domain "{domain}"
+读取 `{PROJECT_ROOT}/.webnovel/knowledge.json`，筛选 `{domain}` 领域的世界规则。
 
 # 查询时间线
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" memory-contract get-timeline --from {N} --to {M}
+读取 `{PROJECT_ROOT}/.webnovel/state.json` 时间线（或 `{PROJECT_ROOT}/大纲/` 中的时间线文件），返回第 {N} 到 {M} 区间。
 ```
 
 ### 按需命令
-```bash
+```
 # 获取追读力信号
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" index get-reader-signals --limit 5 --last-n 20
+读取 `{PROJECT_ROOT}/.webnovel/state.json` 的追读力信号，取最近 20 章、前 5 条。
 
 # 获取核心实体
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" index get-core-entities
+读取 `{PROJECT_ROOT}/.webnovel/state.json`，返回核心实体列表。
 
 # 查询角色状态（指定章节）
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" knowledge query-entity-state --entity "{entity_id}" --at-chapter {N}
+读取 `{PROJECT_ROOT}/.webnovel/knowledge.json`，返回实体 `{entity_id}` 截至第 {N} 章的状态。
 
 # 查询角色关系（指定章节）
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" knowledge query-relationships --entity "{entity_id}" --at-chapter {N}
+读取 `{PROJECT_ROOT}/.webnovel/relationships.json`，返回实体 `{entity_id}` 截至第 {N} 章的关系。
 
 # 提取章节上下文
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" extract-context --chapter {NNNN} --format json
+读取 `{PROJECT_ROOT}/正文/第{NNNN}章-*.md`，提取章节上下文（结构化 JSON）。
 ```
 
-### load-context 已包含的数据（不要重复查）
+### 基础包已包含的数据（不要重复查）
 - `story_contracts`：MASTER/volume/chapter/review 合同
 - `recent_summaries`：近 2 章摘要
 - `urgent_loops`：前 3 条紧急伏笔
@@ -59,7 +59,7 @@ python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" extr
 - `memory_pack`：追读力数据
 - `genre_profile_excerpt`：当前题材画像
 
-只有 load-context 返回空 contracts 时才直接 Read `.story-system/*.json`。
+只有基础包 contracts 为空时才直接 Read `{PROJECT_ROOT}/.webnovel/*.json`。
 
 ## 3. 裁决层（在 chapter 合同的 `reasoning` 对象中）
 
@@ -92,21 +92,21 @@ python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" extr
 
 ## 5. 执行流程
 
-### A：基础包（1 Bash + 1 Read）
-1. `load-context --chapter {NNNN}` 获取基础包
-2. `Read` 章纲原文（load-context 的 outline 可能截断）
+### A：基础包（读 state/summaries + 1 Read）
+1. 读取 `{PROJECT_ROOT}/.webnovel/state.json` 与 `{PROJECT_ROOT}/.webnovel/summaries/`，获取第 {NNNN} 章基础包
+2. `Read` 章纲原文（基础包的 outline 可能截断）
 3. 确定卷号（优先 runtime contracts / latest commit；必要时兼容读取 state.json 投影）
 4. 若用户明确提供额外的项目级文风/反 AI 味规则文件，读取并只消费规则，不在任务书暴露文件名
 
 ### B：按需深查（只查基础包不足的）
-- 配角细节 → `query-entity`
-- 特定规则 → `query-rules --domain`
-- 时间跨度 → `get-timeline` 或 Read 时间线文件
+- 配角细节 → 读 `{PROJECT_ROOT}/.webnovel/state.json` 中该实体
+- 特定规则 → 读 `{PROJECT_ROOT}/.webnovel/knowledge.json` 中对应领域
+- 时间跨度 → 读 `{PROJECT_ROOT}/.webnovel/state.json` 时间线，或 Read 时间线文件
 
 **时间规则**：跨夜须过渡，倒计时不跳跃，不回跳。
 
 ### C：补充（可选）
-追读力已在 memory_pack 中。仅需精确统计时调 `index get-reader-signals`。
+追读力已在 memory_pack 中。仅需精确统计时读 `{PROJECT_ROOT}/.webnovel/state.json` 的追读力信号。
 伏笔：`urgent_loops` 已在基础包中。`remaining ≤ 5` 或超期的必须处理，可选伏笔最多 5 条。
 
 ### D：组装
@@ -206,7 +206,7 @@ python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "{project_root}" extr
 
 | 场景 | 处理 |
 |------|------|
-| load-context 返回空 | 降级为 `extract-context --format json` |
+| 基础包返回空 | 降级为读 `{PROJECT_ROOT}/正文/第{NNNN}章-*.md` 提取章节上下文 |
 | contracts 缺失 | 标明 legacy fallback |
 | chapter_meta 缺失 | 跳过"接住上章" |
 | 伏笔数据缺失 | 标注"需人工补录"，不静默跳过 |

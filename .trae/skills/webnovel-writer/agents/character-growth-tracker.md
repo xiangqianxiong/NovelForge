@@ -96,30 +96,26 @@ model: inherit
 
 ### 4.1 查询角色当前状态
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" character state --id "xiaoyan"
+```
+读取 `{PROJECT_ROOT}/.webnovel/character_growth.json`，返回角色 `xiaoyan` 当前状态。
 ```
 
 ### 4.2 记录角色成长
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" character grow \
-  --id "xiaoyan" \
-  --chapter 50 \
-  --event "突破筑基" \
-  --changes '{"realm": "筑基初期", "confidence": "提升"}'
+```
+读取 `{PROJECT_ROOT}/.webnovel/character_growth.json`，在角色 `xiaoyan` 的 `growth_log` 中追加一条记录（chapter=50、event="突破筑基"、changes={"realm":"筑基初期","confidence":"提升"}），同步更新 `current_state` 后写回文件。
 ```
 
 ### 4.3 检测OOC风险
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" character ooc-check --chapter 51
+```
+读取 `{PROJECT_ROOT}/.webnovel/character_growth.json` 与第 51 章正文 `{PROJECT_ROOT}/正文/第0051章-*.md`，按第 5 节规则检测 OOC，输出检测结论。
 ```
 
 ### 4.4 获取成长上下文
 
-```bash
-python -X utf8 "${SCRIPTS_DIR}/webnovel.py" --project-root "${PROJECT_ROOT}" character growth-context --id "xiaoyan" --at_chapter 51
+```
+读取 `{PROJECT_ROOT}/.webnovel/character_growth.json` 中角色 `xiaoyan` 的 `growth_log` 与 `current_state`，输出截至第 51 章的成长上下文。
 ```
 
 ## 5. OOC检测规则
